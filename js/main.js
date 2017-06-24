@@ -37,8 +37,14 @@ var app = new Vue({
 
     created() {
         if (this.code){
-            this.login_external();
+            this.show_message("Logging in");
+            this.loginExternal();
         }
+
+        /*if (this.code){
+            this.show_message("Signing up");
+            this.signupExternal();
+        }*/
     },
 
     methods: {
@@ -54,13 +60,10 @@ var app = new Vue({
                 })
         },
 
-        login_external() {
-            api.login_external(this.provider, this.code, this.login_remember)
+        loginExternal() {
+            api.loginExternal(this.provider, this.code, true)
                 .then((user) => {
-                    app.show_message("Logged in");
-                    app.login_email = '';
-                    app.login_password = '';
-                    app.user = user;
+                    window.location.search = '';
                 }, (err) => {
                     app.show_message(err.msg);
                 })
@@ -78,13 +81,13 @@ var app = new Vue({
                 })
         },
 
-		signup_external() {
-			api.signup_external(this.external_provider, this.external_provider_code)
+		signupExternal() {
+			api.signupExternal(this.provider, this.code)
 				.then((user) => {
 					app.show_message("Account created");
-					app.external_provider = '';
-					app.external_provider_code = '';
-					app.page = '';
+					app.provider = '';
+					app.code = '';
+                    app.page = '';
 				}, (err) => {
 					app.show_message(err.msg);
 				});
