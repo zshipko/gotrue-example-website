@@ -30,21 +30,21 @@ var app = new Vue({
             user: api.currentUser(),
             message: '',
 			code: qs['code'],
-            provider: qs['provider'] || 'github',
+            provider: localStorage.getItem("provider") || 'github',
             _tm: null,
         }
     },
 
     created() {
-        if (this.code){
-            this.show_message("Logging in");
-            this.loginExternal();
-        }
-
-        /*if (this.code){
+        if (this.code && localStorage.getItem("providerAction") === 'signup'){
             this.show_message("Signing up");
             this.signupExternal();
-        }*/
+            localStorage.removeItem("providerAction");
+        } else if (this.code) {
+            this.show_message("Logging in");
+            this.loginExternal();
+            localStorage.removeItem("providerAction")
+        }
     },
 
     methods: {
@@ -63,6 +63,7 @@ var app = new Vue({
         loginExternal() {
             api.loginExternal(this.provider, this.code, true)
                 .then((user) => {
+                    localStorage.setItem("providerAction", 'login');
                     window.location.search = '';
                 }, (err) => {
                     app.show_message(err.msg);
@@ -82,12 +83,11 @@ var app = new Vue({
         },
 
 		signupExternal() {
+            localStorage
 			api.signupExternal(this.provider, this.code)
 				.then((user) => {
-					app.show_message("Account created");
-					app.provider = '';
-					app.code = '';
-                    app.page = '';
+                    localStorage.setItem("providerAction", 'signup');
+                    window.location.search = '';
 				}, (err) => {
 					app.show_message(err.msg);
 				});
