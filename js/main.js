@@ -2,6 +2,12 @@ var api = new GoTrue({
     APIUrl: "http://127.0.0.1:9999"
 })
 
+let GITHUB_CLIENT_ID = 'b1a5569fe5ca55a141bf';
+let GITHUB_API_URL = 'https://github.com/login/oauth/authorize?client_id='+GITHUB_CLIENT_ID+'&scope=user:email&redirect_uri=http://127.0.0.1:8000';
+
+let BITBUCKET_CLIENT_ID = 'TZrZ59Ps4kXrVTj9uN';
+let BITBUCKET_API_URL = 'https://bitbucket.org/site/oauth2/authorize?client_id='+BITBUCKET_CLIENT_ID+'&scope=account&response_type=code';
+
 var qs = (function(a) {
     if (a == "") return {};
     var b = {};
@@ -30,7 +36,7 @@ var app = new Vue({
             user: api.currentUser(),
             message: '',
 			code: qs['code'],
-            provider: localStorage.getItem("provider") || 'github',
+            provider: localStorage.getItem("provider"),
             _tm: null,
         }
     },
@@ -60,10 +66,21 @@ var app = new Vue({
                 })
         },
 
+        githubFlow() {
+            localStorage.setItem("providerAction", this.page || 'login');
+            localStorage.setItem("provider", 'github');
+            window.location = GITHUB_API_URL;
+        },
+
+        bitbucketFlow() {
+            localStorage.setItem("providerAction", this.page || 'login');
+            localStorage.setItem("provider", 'bitbucket');
+            window.location = BITBUCKET_API_URL;
+        },
+
         loginExternal() {
             api.loginExternal(this.provider, this.code, true)
                 .then((user) => {
-                    localStorage.setItem("providerAction", 'login');
                     window.location.search = '';
                 }, (err) => {
                     app.show_message(err.msg);
@@ -83,10 +100,8 @@ var app = new Vue({
         },
 
 		signupExternal() {
-            localStorage
 			api.signupExternal(this.provider, this.code)
 				.then((user) => {
-                    localStorage.setItem("providerAction", 'signup');
                     window.location.search = '';
 				}, (err) => {
 					app.show_message(err.msg);
