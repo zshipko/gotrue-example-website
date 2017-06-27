@@ -2,6 +2,7 @@
     <head>
         <script src="/js/gotrue.js"></script>
         <script src="https://unpkg.com/vue"></script>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
         <link rel="stylesheet" href="/css/main.css"></link>
     </head>
 
@@ -13,29 +14,51 @@
             <div v-else></div>
 
             <div v-if="user==null">
-                <div>
-                    <a href="#" v-on:click.prevent="page='signup'">Sign up</a> |
-                    <a href="#" v-on:click.prevent="page=''">Login</a>
+                <div class="pure-menu pure-menu-horizontal">
+                    <ul class="pure-menu-list">
+                        <li class="pure-menu-item">
+                            <a href="#" v-on:click.prevent="page='signup'">Sign up</a> |
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="#" v-on:click.prevent="page=''">Login</a>
+                        </li>
+                    </ul>
                 </div>
 
                 <div v-if="page=='signup'" class="signup">
-                    <a v-on:click.prevent="githubFlow" href="#">Signup with Github</a>
-                     | <a v-on:click.prevent="bitbucketFlow" href="#">Signup with Bitbucket</a>
-                    <form v-on:submit.prevent="signup">
+                    <div class="pure-menu pure-menu-vertical">
+                        <ul class="pure-menu-list">
+                            <li class="pure-menu-item">
+                                <a v-on:click.prevent="githubFlow" href="#">Signup with Github</a>
+                            </li>
+                            <li class="pure-menu-item">
+                                <a v-on:click.prevent="bitbucketFlow" href="#">Signup with Bitbucket</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <form class='pure-form' v-on:submit.prevent="signup">
                         <div><label>Email: </label><input type='text' v-model='signup_email'/></div>
                         <div><label>Password: </label><input type='password' v-model='signup_password'/></div>
-                        <input type='submit' value='Sign up'/>
+                        <input type='submit' value='Sign up' class="pure-button"/>
                     </form>
                 </div>
 
                 <div v-else class="login">
-                     <a v-on:click.prevent="githubFlow" href="#">Login with Github</a>
-                      | <a v-on:click.prevent="bitbucketFlow" href="#">Login with Bitbucket</a>
-                    <form v-on:submit.prevent="login">
+                    <div class="pure-menu pure-menu-vertical">
+                        <ul class="pure-menu-list">
+                            <li class="pure-menu-item">
+                                <a v-on:click.prevent="githubFlow" href="#">Login with Github</a>
+                            </li>
+                            <li class="pure-menu-item">
+                                <a v-on:click.prevent="bitbucketFlow" href="#">Login with Bitbucket</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <form class="pure-form" v-on:submit.prevent="login">
                         <div><label>Email: </label><input type='text' v-model='login_email'/></div>
                         <div><label>Password: </label><input type='password' v-model='login_password'/></div>
-                        <div><input type='checkbox' v-model='login_remember'/><label>Remember me</label></div>
-                        <input type='submit' value='Login'/>
+                        <div><input type='checkbox' v-model='login_remember'/><label>Remember</label></div>
+                        <input type='submit' value='Login' class="pure-button"/>
                     </form>
                 </div>
             </div>
