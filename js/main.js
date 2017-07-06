@@ -8,6 +8,10 @@ let GITHUB_API_URL = 'https://github.com/login/oauth/authorize?client_id='+GITHU
 let BITBUCKET_CLIENT_ID = 'TZrZ59Ps4kXrVTj9uN';
 let BITBUCKET_API_URL = 'https://bitbucket.org/site/oauth2/authorize?client_id='+BITBUCKET_CLIENT_ID+'&scope=account&response_type=code';
 
+let GITLAB_CLIENT_ID = '68487200e6fbaa44566041e67a0464a2b0f4a461809c5a0b85563d7c8b98e4e5';
+let GITLAB_API_URL = 'https://gitlab.com/oauth/authorize?client_id='+GITLAB_CLIENT_ID + "&response_type=code&redirect_uri=http://127.0.0.1:8000";
+
+
 var qs = (function(a) {
     if (a == "") return {};
     var b = {};
@@ -34,6 +38,7 @@ var app = new Vue({
             signup_password: '',
             page: '',
             user: api.currentUser(),
+            users: null,
             message: '',
 			code: qs['code'],
             provider: localStorage.getItem("provider"),
@@ -51,9 +56,21 @@ var app = new Vue({
             this.loginExternal();
             localStorage.removeItem("providerAction")
         }
+        this.getAdminUsers();
     },
 
     methods: {
+
+        getAdminUsers() {
+            if (this.user){
+                this.user.adminUsers()
+                    .then((userData) => {
+                        app.users = userData.users;
+                    })
+            }
+        },
+
+
         login() {
             api.login(this.login_email, this.login_password, this.login_remember)
                 .then((user) => {
@@ -61,21 +78,29 @@ var app = new Vue({
                     app.login_email = '';
                     app.login_password = '';
                     app.user = user;
+                    this.getAdminUsers();
                 }, (err) => {
                     app.show_message(err.msg);
                 })
         },
 
-        githubFlow() {
+        externalFlow(name, url) {
             localStorage.setItem("providerAction", this.page || 'login');
-            localStorage.setItem("provider", 'github');
-            window.location = GITHUB_API_URL;
+            localStorage.setItem("provider", name);
+            window.location = url;
+
+        },
+
+        githubFlow() {
+            this.externalFlow('github', GITHUB_API_URL);
         },
 
         bitbucketFlow() {
-            localStorage.setItem("providerAction", this.page || 'login');
-            localStorage.setItem("provider", 'bitbucket');
-            window.location = BITBUCKET_API_URL;
+            this.externalFlow('bitbucket', BITBUCKET_API_URL);
+        },
+
+        gitlabFlow() {
+            this.externalFlow('gitlab', GITLAB_API_URL);
         },
 
         loginExternal() {

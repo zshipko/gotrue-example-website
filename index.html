@@ -34,6 +34,9 @@
                             <li class="pure-menu-item">
                                 <a v-on:click.prevent="bitbucketFlow" href="#">Signup with Bitbucket</a>
                             </li>
+                            <li class="pure-menu-item">
+                                <a v-on:click.prevent="gitlabFlow" href="#">Signup with Gitlab</a>
+                            </li>
                         </ul>
                     </div>
                     <form class='pure-form' v-on:submit.prevent="signup">
@@ -51,6 +54,9 @@
                             </li>
                             <li class="pure-menu-item">
                                 <a v-on:click.prevent="bitbucketFlow" href="#">Login with Bitbucket</a>
+                            </li>
+                            <li class="pure-menu-item">
+                                <a v-on:click.prevent="gitlabFlow" href="#">Login with Gitlab</a>
                             </li>
                         </ul>
                     </div>
@@ -75,6 +81,13 @@
                     <li>Audience: {{ user.aud }}</li>
                     <li>Role: {{ user.role }}</li>
                 </ul>
+
+                <div v-if="users">
+                    <h3>Users</h3>
+                    <ul>
+                        <li v-for="u in users">{{ u.email }}</li>
+                    </ul>
+                </div>
             </div>
 
         </div>
